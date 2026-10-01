@@ -1,0 +1,35 @@
+RAM MANDIR ADVANCED PROJECT
+===========================
+
+1. Open Command Prompt in this folder.
+2. Install dependencies:
+   pip install -r requirements.txt
+3. Start:
+   python app.py
+4. Open:
+   http://127.0.0.1:5055
+
+ADMIN DEMO LOGIN
+----------------
+Email:    admin@rammandir.local
+Password: Admin@123
+
+After login, click My Account -> Open Admin Dashboard,
+or open http://127.0.0.1:5055/admin
+
+NOTE:
+The admin account is for college-project demonstration only.
+Change the password and SECRET_KEY before real/public deployment.
+
+MAIN NEW MODULES
+----------------
+- Admin Dashboard
+- Role-based access control
+- Booking management
+- User management
+- Darshan slot/capacity management
+- Help-desk inbox
+- Analytics charts
+- CSV booking export
+- Public announcements
+- Admin audit log

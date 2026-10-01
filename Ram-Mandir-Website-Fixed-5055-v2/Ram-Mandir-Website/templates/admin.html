@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ram Mandir • Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--saffron:#a94412;--deep:#431707;--gold:#d89b28;--cream:#fff9ef;--ink:#2d211b;--muted:#756b64;--line:#eadfd2;--white:#fff;--green:#17804d;--red:#b53b31;--shadow:0 12px 35px rgba(65,35,10,.09)}
+*{box-sizing:border-box}body{margin:0;background:#f8f4ee;color:var(--ink);font-family:Inter,system-ui,sans-serif}button,input,select,textarea{font:inherit}
+.top{height:70px;background:linear-gradient(110deg,#4a1807,#8e3510);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 4vw;position:sticky;top:0;z-index:20;box-shadow:0 5px 25px #0002}.brand{font-family:"Playfair Display";font-size:1.35rem}.brand small{display:block;font:11px Inter;opacity:.72;letter-spacing:.12em}.top a{color:#fff;text-decoration:none;margin-left:14px}.wrap{width:min(1400px,94%);margin:28px auto}.welcome{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:24px}.welcome h1{margin:0;font:700 clamp(1.7rem,3vw,2.6rem) "Playfair Display"}.welcome p{color:var(--muted);margin:.4rem 0 0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}.metric i{font-size:1.2rem;color:var(--gold)}.metric strong{display:block;font-size:2rem;margin-top:8px}.metric span{font-size:.84rem;color:var(--muted)}.layout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-top:18px}.card h2{font-size:1.05rem;margin:0 0 16px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 12px}.tab{border:1px solid var(--line);background:#fff;padding:10px 15px;border-radius:10px;cursor:pointer}.tab.active{background:var(--deep);color:#fff}.panel{display:none}.panel.active{display:block}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}.toolbar input,.toolbar select,.form input,.form textarea,.form select{border:1px solid var(--line);padding:10px 12px;border-radius:9px;background:#fff}.toolbar input{min-width:240px}.btn{border:0;border-radius:9px;padding:10px 14px;cursor:pointer}.btn.primary{background:var(--saffron);color:#fff}.btn.light{background:#f5eee4}.btn.danger{background:#fff0ee;color:var(--red)}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:.87rem}.table th,.table td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.table th{color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.72rem;font-weight:700}.confirmed,.success{background:#e9f7ef;color:var(--green)}.cancelled,.warning{background:#fff0ee;color:var(--red)}.visitor{background:#f0eee9}.admin{background:#fff2cf;color:#7b4d00}.form{display:grid;gap:10px}.form textarea{min-height:100px;resize:vertical}.form .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.msg{padding:13px;border:1px solid var(--line);border-radius:10px;margin:8px 0;background:#fff}.msg b{display:block}.muted{color:var(--muted);font-size:.8rem}.chartbox{height:290px}.notice{padding:12px;border-left:4px solid var(--gold);background:#fff9e9;margin:12px 0;border-radius:8px}.empty{padding:35px;text-align:center;color:var(--muted)}@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}@media(max-width:600px){.grid{grid-template-columns:1fr}.welcome{align-items:start;flex-direction:column}.form .row{grid-template-columns:1fr}.top{padding:0 4%}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">श्री राम जन्मभूमि <small>VISITOR PORTAL • ADMIN CONSOLE</small></div>
+  <div><span>{{ admin.name }}</span><a href="/"><i class="fa-solid fa-house"></i> Website</a></div>
+</header>
+<main class="wrap">
+<section class="welcome">
+  <div><h1>Admin Dashboard</h1><p>Manage devotees, darshan reservations, schedules, messages and portal analytics.</p></div>
+  <button class="btn light" onclick="location.href='/'"><i class="fa-solid fa-arrow-left"></i> Back to portal</button>
+</section>
+
+<section class="grid" id="metrics"></section>
+
+<div class="layout">
+ <div class="card"><h2><i class="fa-solid fa-chart-line"></i> Booking Activity</h2><div class="chartbox"><canvas id="bookingChart"></canvas></div></div>
+ <div class="card"><h2><i class="fa-solid fa-clock"></i> Popular Darshan Slots</h2><div id="popular"></div></div>
+</div>
+
+<nav class="tabs">
+ <button class="tab active" data-panel="bookings">Bookings</button>
+ <button class="tab" data-panel="users">Users</button>
+ <button class="tab" data-panel="slots">Slots</button>
+ <button class="tab" data-panel="messages">Help Desk</button>
+ <button class="tab" data-panel="announcements">Announcements</button>
+ <button class="tab" data-panel="audit">Audit Log</button>
+</nav>
+
+<section id="bookings" class="panel active card">
+ <h2>Booking Management</h2>
+ <div class="toolbar"><input id="bookingSearch" placeholder="Search reference, name or email"><select id="bookingStatus"><option value="all">All statuses</option><option value="confirmed">Confirmed</option><option value="cancelled">Cancelled</option></select><button class="btn light" onclick="loadBookings()"><i class="fa-solid fa-rotate"></i> Refresh</button><a class="btn primary" href="/api/admin/export/bookings.csv"><i class="fa-solid fa-file-csv"></i> Export CSV</a></div>
+ <div class="table-wrap"><table class="table"><thead><tr><th>Ref</th><th>Devotee</th><th>Date</th><th>Slot</th><th>People</th><th>Status</th><th>Action</th></tr></thead><tbody id="bookingRows"></tbody></table></div>
+</section>
+
+<section id="users" class="panel card">
+ <h2>User & Role Management</h2><p class="muted">Promote a trusted account to administrator for project demonstration. Role changes are recorded in the audit log.</p>
+ <div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Bookings</th><th>Joined</th><th>Action</th></tr></thead><tbody id="userRows"></tbody></table></div>
+</section>
+
+<section id="slots" class="panel card">
+ <h2>Darshan Slot & Capacity Management</h2><div id="slotRows"></div>
+</section>
+
+<section id="messages" class="panel card">
+ <h2>Help Desk Inbox</h2><div id="messageRows"></div>
+</section>
+
+<section id="announcements" class="panel card">
+ <h2>Portal Announcements</h2>
+ <form class="form" id="announcementForm"><div class="form row"><input id="aTitle" placeholder="Announcement title" required><select id="aType"><option>info</option><option>warning</option><option>success</option></select></div><textarea id="aBody" placeholder="Message shown to visitors" required></textarea><button class="btn primary">Publish announcement</button></form>
+ <div id="announcementRows"></div>
+</section>
+
+<section id="audit" class="panel card">
+ <h2>Audit Trail</h2><p class="muted">Recent administrator actions for accountability and project demonstration.</p>
+ <div class="table-wrap"><table class="table"><thead><tr><th>Time</th><th>Admin</th><th>Action</th><th>Target</th><th>Details</th></tr></thead><tbody id="auditRows"></tbody></table></div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+async function api(url,opt={}){let r=await fetch(url,{headers:{'Content-Type':'application/json'},...opt,body:opt.body?JSON.stringify(opt.body):undefined});let d=await r.json();if(!r.ok)throw Error(d.error||'Request failed');return d}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function msg(e){alert(e.message||e)}
+$$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.remove('active'));$('.panel.active').classList.remove('active');b.classList.add('active');$('#'+b.dataset.panel).classList.add('active')});
+async function loadOverview(){
+ const d=await api('/api/admin/overview'), s=d.stats;
+ $('#metrics').innerHTML=[
+  ['fa-users','Registered Devotees',s.users],['fa-calendar-check','Total Bookings',s.bookings],
+  ['fa-person','Confirmed Devotees',s.confirmed_people],['fa-eye','Page Views',s.page_views],
+ ].map(x=>`<div class="card metric"><i class="fa-solid ${x[0]}"></i><strong>${x[2].toLocaleString('en-IN')}</strong><span>${x[1]}</span></div>`).join('');
+ $('#popular').innerHTML=d.popular.length?d.popular.map(x=>`<div style="padding:10px 0;border-bottom:1px solid #eadfd2"><b>${esc(x.label)}</b><div class="muted">${x.people} devotees • ${x.bookings} reservations</div></div>`).join(''):'<div class="empty">No booking data yet.</div>';
+ const labels=d.daily.map(x=>x.day), vals=d.daily.map(x=>x.people);
+ if(window.bookingChartObj)window.bookingChartObj.destroy();
+ window.bookingChartObj=new Chart($('#bookingChart'),{type:'line',data:{labels,datasets:[{label:'Devotees booked',data:vals,tension:.35,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+}
+async function loadBookings(){let q=encodeURIComponent($('#bookingSearch').value),st=$('#bookingStatus').value;let d=await api('/api/admin/bookings?q='+q+'&status='+st);$('#bookingRows').innerHTML=d.bookings.length?d.bookings.map(b=>`<tr><td><b>${esc(b.reference)}</b></td><td>${esc(b.name)}<div class="muted">${esc(b.email)}</div></td><td>${esc(b.visit_date)}</td><td>${esc(b.label)}<div class="muted">${b.start}-${b.end}</div></td><td>${b.people}</td><td><span class="badge ${b.status}">${b.status}</span></td><td>${b.status==='confirmed'?`<button class="btn danger" onclick="setBooking(${b.id},'cancelled')">Cancel</button>`:`<button class="btn light" onclick="setBooking(${b.id},'confirmed')">Restore</button>`}</td></tr>`).join(''):'<tr><td colspan="7" class="empty">No bookings found.</td></tr>'}
+async function setBooking(id,status){try{await api('/api/admin/bookings/'+id+'/status',{method:'POST',body:{status}});await loadBookings();await loadOverview()}catch(e){msg(e)}}
+async function loadUsers(){let d=await api('/api/admin/users');$('#userRows').innerHTML=d.users.map(u=>`<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.email)}</td><td>${esc(u.phone||'-')}</td><td><span class="badge ${u.role}">${u.role}</span></td><td>${u.bookings}</td><td>${esc(u.created_at)}</td><td>${u.role==='admin'?'<span class="muted">Admin</span>':`<button class="btn light" onclick="role(${u.id},'admin')">Make Admin</button>`}</td></tr>`).join('')}
+async function role(id,r){if(!confirm('Make this account an administrator?'))return;try{await api('/api/admin/users/'+id+'/role',{method:'POST',body:{role:r}});loadUsers();loadOverview()}catch(e){msg(e)}}
+async function loadSlots(){let d=await api('/api/admin/slots');$('#slotRows').innerHTML=d.slots.map(s=>`<div class="card" style="margin:10px 0;box-shadow:none"><div class="form"><div class="form row"><input id="sl${s.id}label" value="${esc(s.label)}"><input id="sl${s.id}cap" type="number" min="1" value="${s.capacity}"></div><div class="form row"><input id="sl${s.id}start" value="${s.start}"><input id="sl${s.id}end" value="${s.end}"></div><button class="btn primary" onclick="saveSlot(${s.id})">Save ${esc(s.label)}</button></div></div>`).join('')}
+async function saveSlot(id){try{await api('/api/admin/slots/'+id,{method:'POST',body:{label:$('#sl'+id+'label').value,capacity:$('#sl'+id+'cap').value,start:$('#sl'+id+'start').value,end:$('#sl'+id+'end').value}});alert('Slot updated');loadSlots()}catch(e){msg(e)}}
+async function loadMessages(){let d=await api('/api/admin/messages');$('#messageRows').innerHTML=d.messages.length?d.messages.map(m=>`<div class="msg"><b>${esc(m.subject)}</b><div>${esc(m.name)} • <a href="mailto:${esc(m.email)}">${esc(m.email)}</a> • ${esc(m.created_at)}</div><p>${esc(m.body)}</p></div>`).join(''):'<div class="empty">Inbox is empty.</div>'}
+async function loadAnnouncements(){let d=await api('/api/announcements');$('#announcementRows').innerHTML=d.announcements.map(a=>`<div class="notice"><b>${esc(a.title)}</b><div>${esc(a.body)}</div></div>`).join('')}
+$('#announcementForm').onsubmit=async e=>{e.preventDefault();try{await api('/api/admin/announcements',{method:'POST',body:{title:$('#aTitle').value,body:$('#aBody').value,type:$('#aType').value}});e.target.reset();loadAnnouncements();alert('Announcement published')}catch(e){msg(e)}}
+async function loadAudit(){let d=await api('/api/admin/audit');$('#auditRows').innerHTML=d.logs.map(a=>`<tr><td>${esc(a.created_at)}</td><td>${esc(a.admin_name||'System')}</td><td><span class="badge admin">${esc(a.action)}</span></td><td>${esc(a.target||'-')}</td><td>${esc(a.details||'-')}</td></tr>`).join('')}
+$('#bookingSearch').oninput=loadBookings;$('#bookingStatus').onchange=loadBookings;
+(async()=>{try{await Promise.all([loadOverview(),loadBookings(),loadUsers(),loadSlots(),loadMessages(),loadAnnouncements(),loadAudit()])}catch(e){msg(e)}})();
+</script>
+</body>
+</html>

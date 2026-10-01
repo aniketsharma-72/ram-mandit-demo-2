@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Darshan Ticket · {{ booking.reference if booking else 'Invalid Ticket' }}</title>
+  <style>
+    :root{--saffron:#b85c19;--ink:#2b2119;--paper:#fffdf8;--line:#e6d7c5}
+    *{box-sizing:border-box} body{margin:0;background:#f5efe7;color:var(--ink);font-family:Arial,sans-serif;padding:32px}
+    .ticket{max-width:760px;margin:auto;background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 15px 50px #0001}
+    .head{padding:24px 28px;background:linear-gradient(135deg,#fff4df,#fffdf8);border-bottom:1px dashed #c9a67e;display:flex;justify-content:space-between;gap:20px}
+    .brand{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--saffron);font-weight:700}.head h1{margin:7px 0 2px;font-size:28px}.head p{margin:0;color:#74665a}
+    .body{padding:28px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.item{border:1px solid var(--line);border-radius:12px;padding:13px}.item span{display:block;font-size:11px;text-transform:uppercase;color:#8c7d70;letter-spacing:.08em}.item strong{display:block;margin-top:5px;font-size:16px}
+    .qr{display:flex;align-items:center;justify-content:center;flex-direction:column;border-left:1px dashed var(--line);padding-left:28px}.qr img{width:190px;height:190px;image-rendering:auto}.ref{font-family:monospace;font-size:18px;font-weight:700;letter-spacing:.08em;margin-top:8px}
+    .actions{display:flex;gap:10px;margin-top:24px}.btn{border:0;border-radius:10px;padding:12px 17px;background:var(--saffron);color:#fff;text-decoration:none;font-weight:700;cursor:pointer}.btn.alt{background:#efe5d9;color:var(--ink)}
+    .valid{color:#18743b;font-weight:700}.invalid{padding:40px;text-align:center}.note{font-size:12px;color:#7a6d62;margin-top:20px;line-height:1.5}
+    @media(max-width:650px){body{padding:12px}.head{display:block}.grid{grid-template-columns:1fr}.qr{border-left:0;border-top:1px dashed var(--line);padding:24px 0 0;margin-top:10px}.actions{flex-direction:column}}
+    @media print{body{padding:0;background:#fff}.ticket{box-shadow:none;border:0}.actions{display:none}.note{margin-bottom:0}}
+  </style>
+</head>
+<body>
+<div class="ticket">
+{% if valid and booking %}
+  <div class="head"><div><div class="brand">Shri Ram Janmabhoomi · Ayodhya</div><h1>Darshan E-Ticket</h1><p>Digital visitor reservation</p></div><div class="valid">✓ VERIFIED TICKET</div></div>
+  <div class="body">
+    <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center">
+      <div class="grid">
+        <div class="item"><span>Devotee</span><strong>{{ booking.name }}</strong></div>
+        <div class="item"><span>Reference</span><strong>{{ booking.reference }}</strong></div>
+        <div class="item"><span>Darshan date</span><strong>{{ booking.visit_date }}</strong></div>
+        <div class="item"><span>Devotees</span><strong>{{ booking.people }}</strong></div>
+        <div class="item"><span>Slot</span><strong>{{ booking.label }}</strong></div>
+        <div class="item"><span>Timing</span><strong>{{ booking.start }} – {{ booking.end }}</strong></div>
+        <div class="item"><span>Status</span><strong>{{ booking.status|capitalize }}</strong></div>
+        <div class="item"><span>Booking created</span><strong>{{ booking.created_at }}</strong></div>
+      </div>
+      <div class="qr"><img src="{{ url_for('booking_qr', reference=booking.reference) }}" alt="QR code for ticket verification"><div class="ref">{{ booking.reference }}</div><small>Scan to verify</small></div>
+    </div>
+    <div class="note"><strong>Visitor note:</strong> Carry a valid photo ID matching the booking details. This student-project ticket is a digital reservation demonstration and is not an official temple-issued pass.</div>
+    <div class="actions"><button class="btn" onclick="window.print()">Print / Save PDF</button><a class="btn alt" href="{{ verify_url }}">Open Verification</a></div>
+  </div>
+{% else %}
+  <div class="invalid"><h1>Invalid Ticket</h1><p>The ticket link is invalid, expired, or could not be found.</p></div>
+{% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Official visitor portal for Shri Ram Janmabhoomi Mandir, Ayodhya. Book darshan slots, check live crowd status, aarti timings, rules, nearby places and emergency contacts.">
+    <title>Shri Ram Janmabhoomi Mandir, Ayodhya — Visitor Portal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- ============================= TOP BAR ============================= -->
+<div class="top-bar">
+    <div class="container">
+        <p class="top-mantra">॥ श्री राम जय राम जय जय राम ॥</p>
+
+        <div class="top-tools">
+            <div class="text-size" role="group" aria-label="Text size">
+                <button data-size="0.9" title="Smaller text">A</button>
+                <button data-size="1" class="active" title="Normal text">A</button>
+                <button data-size="1.15" title="Larger text">A</button>
+            </div>
+            <span class="divider">|</span>
+            <button class="lang-toggle" id="langToggle">
+                <i class="fa-solid fa-language"></i><span id="langLabel">हिंदी</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================== NAVBAR ============================== -->
+<header class="navbar" id="navbar">
+    <div class="container">
+
+        <a href="#home" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-gopuram"></i></div>
+            <div class="logo-text">
+                <h1>राम मंदिर</h1>
+                <span>Ayodhya</span>
+            </div>
+        </a>
+
+        <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+            <a href="#home" class="active" data-en="Home" data-hi="होम">Home</a>
+            <a href="#about" data-en="About" data-hi="परिचय">About</a>
+            <a href="#timings" data-en="Timings" data-hi="समय">Timings</a>
+            <a href="#visitors" data-en="Live Status" data-hi="लाइव स्थिति">Live Status</a>
+            <a href="#gallery" data-en="Gallery" data-hi="गैलरी">Gallery</a>
+            <a href="#rules" data-en="Rules" data-hi="नियम">Rules</a>
+            <a href="#nearby" data-en="Nearby" data-hi="आसपास">Nearby</a>
+            <a href="#festivals" data-en="Festivals" data-hi="त्योहार">Festivals</a>
+            <a href="#emergency" data-en="Emergency" data-hi="आपातकाल">Emergency</a>
+            <a href="#help" data-en="Help" data-hi="सहायता">Help</a>
+        </nav>
+
+        <div class="nav-actions">
+            <!-- Swapped for a user chip once logged in -->
+            <button class="btn btn-primary btn-sm" id="authBtn">
+                <i class="fa-solid fa-user"></i><span data-en="Login" data-hi="लॉगिन">Login</span>
+            </button>
+            <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+    </div>
+</header>
+
+<div id="announcementBar" style="display:none;background:#fff7df;border-bottom:1px solid #ead7aa;color:#5b3b13;padding:10px 4%;font-size:.88rem">
+  <div style="max-width:1180px;margin:auto;display:flex;gap:12px;align-items:center">
+    <i class="fa-solid fa-bullhorn"></i><strong id="announcementTitle"></strong><span id="announcementText"></span>
+  </div>
+</div>
+
+
+
+<!-- =============================== HERO =============================== -->
+<section class="hero" id="home">
+    <div class="hero-bg"></div>
+
+    <div class="hero-content">
+        <span class="hero-eyebrow">Shri Ram Janmabhoomi</span>
+
+        <h2>राम मंदिर</h2>
+        <p class="hero-sub">अयोध्या धाम</p>
+
+        <span class="hero-mantra">॥ जय श्री राम ॥</span>
+
+        <p data-en="Plan your darshan with live crowd updates, aarti timings and everything you need for a peaceful visit to the holy city of Ayodhya."
+           data-hi="लाइव भीड़ की जानकारी, आरती समय और अयोध्या की शांतिपूर्ण यात्रा के लिए आवश्यक हर जानकारी के साथ अपने दर्शन की योजना बनाएं।">
+            Plan your darshan with live crowd updates, aarti timings and everything you need
+            for a peaceful visit to the holy city of Ayodhya.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#visitors" class="btn btn-primary">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span data-en="Book Darshan" data-hi="दर्शन बुक करें">Book Darshan</span>
+            </a>
+            <a href="#about" class="btn btn-light">
+                <span data-en="Explore Temple" data-hi="मंदिर देखें">Explore Temple</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="hero-live">
+            <span class="pulse-dot" id="heroDot"></span>
+            <span id="heroLive">Loading live temple status…</span>
+        </div>
+    </div>
+
+    <a href="#quick" class="scroll-cue" aria-label="Scroll down">
+        <i class="fa-solid fa-chevron-down"></i>
+    </a>
+</section>
+
+
+<!-- =========================== QUICK ACCESS =========================== -->
+<div class="quick-section" id="quick">
+    <div class="container">
+        <div class="quick-grid">
+
+            <a href="#timings" class="quick-card reveal">
+                <div class="quick-icon"><i class="fa-solid fa-clock"></i></div>
+                <h3 data-en="Timings" data-hi="समय">Timings</h3>
+                <p data-en="Darshan &amp; aarti schedule" data-hi="दर्शन एवं आरती समय">Darshan &amp; aarti schedule</p>
+            </a>
+
+            <a href="#visitors" class="quick-card reveal">
+                <div class="quick-icon"><i class="fa-solid fa-users"></i></div>
+                <h3 data-en="Live Crowd" data-hi="लाइव भीड़">Live Crowd</h3>
+                <p data-en="Real-time visitor status" data-hi="वास्तविक समय स्थिति">Real-time visitor status</p>
+            </a>
+
+            <a href="#visitors" class="quick-card reveal">
+                <div class="quick-icon"><i class="fa-solid fa-ticket"></i></div>
+                <h3 data-en="Book Darshan" data-hi="दर्शन बुकिंग">Book Darshan</h3>
+                <p data-en="Reserve your slot free" data-hi="निःशुल्क स्लॉट आरक्षित करें">Reserve your slot free</p>
+            </a>
+
+            <a href="#nearby" class="quick-card reveal">
+                <div class="quick-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                <h3 data-en="Nearby" data-hi="आसपास">Nearby</h3>
+                <p data-en="Temples, ghats &amp; food" data-hi="मंदिर, घाट एवं भोजन">Temples, ghats &amp; food</p>
+            </a>
+
+            <a href="#festivals" class="quick-card reveal">
+                <div class="quick-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                <h3 data-en="Festivals" data-hi="त्योहार">Festivals</h3>
+                <p data-en="Upcoming special days" data-hi="आगामी विशेष दिन">Upcoming special days</p>
+            </a>
+
+            <a href="#emergency" class="quick-card reveal">
+                <div class="quick-icon"><i class="fa-solid fa-kit-medical"></i></div>
+                <h3 data-en="Emergency" data-hi="आपातकाल">Emergency</h3>
+                <p data-en="Helpline numbers" data-hi="हेल्पलाइन नंबर">Helpline numbers</p>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================== STATS ============================== -->
+<section class="stats">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-box reveal">
+                <i class="fa-solid fa-users"></i>
+                <div class="stat-num" data-count="125000" data-suffix="+">0</div>
+                <p data-en="Daily Devotees" data-hi="दैनिक श्रद्धालु">Daily Devotees</p>
+            </div>
+            <div class="stat-box reveal">
+                <i class="fa-solid fa-ruler-combined"></i>
+                <div class="stat-num" data-count="161" data-suffix=" ft">0</div>
+                <p data-en="Temple Height" data-hi="मंदिर की ऊंचाई">Temple Height</p>
+            </div>
+            <div class="stat-box reveal">
+                <i class="fa-solid fa-archway"></i>
+                <div class="stat-num" data-count="392" data-suffix="">0</div>
+                <p data-en="Carved Pillars" data-hi="नक्काशीदार स्तंभ">Carved Pillars</p>
+            </div>
+            <div class="stat-box reveal">
+                <i class="fa-solid fa-calendar-check"></i>
+                <div class="stat-num" data-count="365" data-suffix="">0</div>
+                <p data-en="Days Open" data-hi="खुले दिन">Days Open</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================== ABOUT ============================== -->
+<section class="about" id="about">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">About the Mandir</span>
+            <h2 data-en="Shri Ram Janmabhoomi Mandir" data-hi="श्री राम जन्मभूमि मंदिर">
+                Shri Ram Janmabhoomi Mandir
+            </h2>
+            <p data-en="The birthplace of Bhagwan Shri Ram, rebuilt in the traditional Nagara style of temple architecture."
+               data-hi="भगवान श्री राम की जन्मभूमि, पारंपरिक नागर शैली की मंदिर वास्तुकला में पुनर्निर्मित।">
+                The birthplace of Bhagwan Shri Ram, rebuilt in the traditional Nagara style
+                of temple architecture.
+            </p>
+            <div class="divider-om">ॐ</div>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-media reveal">
+                <img src="{{ url_for('static', filename='images/about.jpg') }}"
+                     alt="The mandapa and shikhara of Shri Ram Janmabhoomi Mandir, Ayodhya" loading="lazy">
+                <div class="about-badge">
+                    <strong>2024</strong>
+                    <span>Pran Pratishtha</span>
+                </div>
+            </div>
+
+            <div class="about-text reveal">
+                <h3 data-en="A temple 500 years in the making" data-hi="500 वर्षों की प्रतीक्षा का मंदिर">
+                    A temple 500 years in the making
+                </h3>
+
+                <p data-en="Built in the Nagara style of North Indian temple architecture, the mandir rises across three floors on a raised plinth. Its 392 pillars and 44 doors are carved from Bansi Paharpur pink sandstone, and notably the structure uses no iron anywhere in its construction."
+                   data-hi="उत्तर भारतीय नागर शैली में निर्मित यह मंदिर एक ऊंचे चबूतरे पर तीन मंजिलों में फैला है। इसके 392 स्तंभ और 44 द्वार बंसी पहाड़पुर गुलाबी बलुआ पत्थर से तराशे गए हैं, और विशेष रूप से इसके निर्माण में कहीं भी लोहे का प्रयोग नहीं हुआ है।">
+                    Built in the Nagara style of North Indian temple architecture, the mandir rises
+                    across three floors on a raised plinth. Its 392 pillars and 44 doors are carved
+                    from Bansi Paharpur pink sandstone, and notably the structure uses no iron
+                    anywhere in its construction.
+                </p>
+
+                <ul class="fact-list">
+                    <li>
+                        <i class="fa-solid fa-gopuram"></i>
+                        <span><strong>Nagara architecture</strong> — 380 ft long, 250 ft wide and
+                        161 ft tall, with five mandapas.</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-sun"></i>
+                        <span><strong>Surya Tilak</strong> — on Ram Navami, sunlight is engineered
+                        to fall on Ram Lalla's forehead at noon.</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-hands-praying"></i>
+                        <span><strong>Ram Lalla</strong> — the 51-inch idol was consecrated on
+                        22 January 2024.</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-universal-access"></i>
+                        <span><strong>Accessible</strong> — ramps and lifts are provided for
+                        elderly and differently-abled devotees.</span>
+                    </li>
+                </ul>
+
+                <a href="#timings" class="btn btn-primary">
+                    <span data-en="View Darshan Timings" data-hi="दर्शन समय देखें">View Darshan Timings</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ============================= TIMINGS ============================= -->
+<section class="alt-bg" id="timings">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">Daily Schedule</span>
+            <h2 data-en="Darshan &amp; Aarti Timings" data-hi="दर्शन एवं आरती समय">Darshan &amp; Aarti Timings</h2>
+            <p data-en="Live availability for today. Timings may be extended on festivals and special occasions."
+               data-hi="आज की उपलब्धता। त्योहारों और विशेष अवसरों पर समय बढ़ाया जा सकता है।">
+                Live availability for today. Timings may be extended on festivals and special occasions.
+            </p>
+        </div>
+
+        <div class="timing-grid" id="timingGrid">
+            <div class="skeleton"></div><div class="skeleton"></div>
+            <div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==================== LIVE STATUS + BOOKING ==================== -->
+<section id="visitors">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">Plan Your Visit</span>
+            <h2 data-en="Live Visitor Status" data-hi="लाइव आगंतुक स्थिति">Live Visitor Status</h2>
+            <p data-en="Check the current crowd before you travel, then reserve a free darshan slot."
+               data-hi="यात्रा से पहले वर्तमान भीड़ देखें, फिर निःशुल्क दर्शन स्लॉट आरक्षित करें।">
+                Check the current crowd before you travel, then reserve a free darshan slot.
+            </p>
+        </div>
+
+        <div class="status-wrap">
+
+            <!-- Live crowd gauge -->
+            <div class="status-card reveal">
+                <div class="status-top">
+                    <span class="live-badge"><span class="pulse-dot"></span> Live now</span>
+                    <span class="status-open" id="openBadge">—</span>
+                </div>
+
+                <div class="gauge-row">
+                    <div class="gauge">
+                        <svg viewBox="0 0 120 120" aria-hidden="true">
+                            <circle class="gauge-track" cx="60" cy="60" r="52"></circle>
+                            <circle class="gauge-fill" id="gaugeFill" cx="60" cy="60" r="52"
+                                    stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+                        </svg>
+                        <div class="gauge-label">
+                            <strong id="gaugePct">–</strong>
+                            <span>Capacity</span>
+                        </div>
+                    </div>
+
+                    <div class="status-detail">
+                        <h3 id="crowdLabel">Checking…</h3>
+                        <p id="crowdAdvice">Fetching the latest visitor information.</p>
+
+                        <div class="status-metrics">
+                            <div class="metric">
+                                <span>Devotees inside</span>
+                                <strong id="mInside">–</strong>
+                            </div>
+                            <div class="metric">
+                                <span>Est. wait</span>
+                                <strong id="mWait">–</strong>
+                            </div>
+                            <div class="metric">
+                                <span>Current session</span>
+                                <strong id="mSlot">–</strong>
+                            </div>
+                            <div class="metric">
+                                <span>Quietest time</span>
+                                <strong id="mBest">–</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-foot">
+                    <span><i class="fa-regular fa-clock"></i> Updated <span id="mUpdated">–</span></span>
+                    <button class="btn btn-ghost btn-sm" id="refreshStatus">
+                        <i class="fa-solid fa-rotate"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Booking form -->
+            <form class="booking-card reveal" id="bookingForm">
+                <h3 data-en="Reserve a Darshan Slot" data-hi="दर्शन स्लॉट आरक्षित करें">Reserve a Darshan Slot</h3>
+                <p data-en="Free of charge. You will receive a booking reference instantly."
+                   data-hi="पूर्णतः निःशुल्क। आपको तुरंत बुकिंग संदर्भ प्राप्त होगा।">
+                    Free of charge. You will receive a booking reference instantly.
+                </p>
+
+                <div class="form-error" id="bookingError">
+                    <i class="fa-solid fa-circle-exclamation"></i><span></span>
+                </div>
+
+                <div class="field">
+                    <label for="bookDate">Visit date</label>
+                    <input type="date" id="bookDate" required>
+                </div>
+
+                <div class="field">
+                    <label for="bookSlot">Darshan slot</label>
+                    <select id="bookSlot" required>
+                        <option value="">Select a date first</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="bookPeople">Number of devotees</label>
+                    <select id="bookPeople">
+                        <option value="1">1 person</option>
+                        <option value="2">2 people</option>
+                        <option value="3">3 people</option>
+                        <option value="4">4 people</option>
+                        <option value="5">5 people</option>
+                        <option value="6">6 people</option>
+                        <option value="8">8 people</option>
+                        <option value="10">10 people</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-light btn-block" id="bookSubmit">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span data-en="Confirm Booking" data-hi="बुकिंग की पुष्टि करें">Confirm Booking</span>
+                </button>
+
+                <p class="booking-note">
+                    <i class="fa-solid fa-lock"></i>
+                    Login required · Carry a valid photo ID on your visit
+                </p>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= GALLERY ============================= -->
+<section class="alt-bg" id="gallery">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">Darshan Gallery</span>
+            <h2 data-en="Glimpses of the Mandir" data-hi="मंदिर की झलकियां">Glimpses of the Mandir</h2>
+            <p data-en="Click any photograph to view it in full size."
+               data-hi="किसी भी चित्र पर क्लिक करके उसे पूर्ण आकार में देखें।">
+                Click any photograph to view it in full size.
+            </p>
+        </div>
+
+        <div class="gallery-grid reveal" id="galleryGrid">
+            <figure class="gallery-item">
+                <img src="{{ url_for('static', filename='images/gallery-6.jpg') }}"
+                     alt="Front elevation of Shri Ram Janmabhoomi Mandir" loading="lazy">
+                <figcaption>The main shikhara at Shri Ram Janmabhoomi</figcaption>
+            </figure>
+            <figure class="gallery-item">
+                <img src="{{ url_for('static', filename='images/gallery-1.jpg') }}"
+                     alt="Side view of the mandir" loading="lazy">
+                <figcaption>Side elevation of the mandir</figcaption>
+            </figure>
+            <figure class="gallery-item">
+                <img src="{{ url_for('static', filename='images/gallery-2.jpg') }}"
+                     alt="The dhwaja atop the temple" loading="lazy">
+                <figcaption>The dhwaja crowning the temple</figcaption>
+            </figure>
+            <figure class="gallery-item">
+                <img src="{{ url_for('static', filename='images/gallery-3.jpg') }}"
+                     alt="Ram Janmabhoomi Mandir, Ayodhya Dham" loading="lazy">
+                <figcaption>Ram Janmabhoomi Mandir, Ayodhya Dham</figcaption>
+            </figure>
+            <figure class="gallery-item">
+                <img src="{{ url_for('static', filename='images/gallery-5.jpg') }}"
+                     alt="Shikhara seen from the side" loading="lazy">
+                <figcaption>Carved shikhara detail</figcaption>
+            </figure>
+            <figure class="gallery-item">
+                <img src="{{ url_for('static', filename='images/gallery-4.jpg') }}"
+                     alt="The mandir illuminated on inauguration day" loading="lazy">
+                <figcaption>Illuminated on Pran Pratishtha day, January 2024</figcaption>
+            </figure>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ============================== RULES ============================== -->
+<section id="rules">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">Before You Visit</span>
+            <h2 data-en="Rules &amp; Guidelines" data-hi="नियम एवं दिशानिर्देश">Rules &amp; Guidelines</h2>
+            <p data-en="Please follow these guidelines to help maintain the sanctity of the temple and keep queues moving safely."
+               data-hi="कृपया मंदिर की पवित्रता बनाए रखने और कतारों को सुरक्षित रूप से चलाने में सहयोग करें।">
+                Please follow these guidelines to help maintain the sanctity of the temple and
+                keep queues moving safely.
+            </p>
+        </div>
+
+        <div class="rules-grid">
+
+            <div class="rule-card allow reveal">
+                <div class="icon-box"><i class="fa-solid fa-circle-check"></i></div>
+                <h3 data-en="Permitted" data-hi="अनुमत">Permitted</h3>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Valid photo ID (Aadhaar, PAN, DL)</li>
+                    <li><i class="fa-solid fa-check"></i> Prasad purchased at the complex</li>
+                    <li><i class="fa-solid fa-check"></i> Small purse or wallet</li>
+                    <li><i class="fa-solid fa-check"></i> Prescription medicines</li>
+                    <li><i class="fa-solid fa-check"></i> Wheelchairs (available free at gate)</li>
+                </ul>
+            </div>
+
+            <div class="rule-card deny reveal">
+                <div class="icon-box"><i class="fa-solid fa-circle-xmark"></i></div>
+                <h3 data-en="Not Allowed" data-hi="निषिद्ध">Not Allowed</h3>
+                <ul>
+                    <li><i class="fa-solid fa-xmark"></i> Mobile phones &amp; cameras inside</li>
+                    <li><i class="fa-solid fa-xmark"></i> Bags, belts and leather items</li>
+                    <li><i class="fa-solid fa-xmark"></i> Outside food, tobacco or alcohol</li>
+                    <li><i class="fa-solid fa-xmark"></i> Weapons of any kind</li>
+                    <li><i class="fa-solid fa-xmark"></i> Pets and inflammable objects</li>
+                </ul>
+            </div>
+
+            <div class="rule-card reveal">
+                <div class="icon-box"><i class="fa-solid fa-shirt"></i></div>
+                <h3 data-en="Dress Code" data-hi="वस्त्र संहिता">Dress Code</h3>
+                <p>Traditional and modest clothing is expected. Shoulders and knees should be
+                   covered. Footwear must be deposited at the free counters near the entrance.</p>
+            </div>
+
+            <div class="rule-card reveal">
+                <div class="icon-box"><i class="fa-solid fa-person-walking-luggage"></i></div>
+                <h3 data-en="Locker Facility" data-hi="लॉकर सुविधा">Locker Facility</h3>
+                <p>Free lockers for phones, bags and footwear are available at all four entry
+                   gates. Keep your token safe — it is required to collect your belongings.</p>
+            </div>
+
+            <div class="rule-card reveal">
+                <div class="icon-box"><i class="fa-solid fa-volume-xmark"></i></div>
+                <h3 data-en="Conduct" data-hi="आचरण">Conduct</h3>
+                <p>Maintain silence in the garbhagriha. Do not push in the queue, and please
+                   follow the instructions of security personnel and volunteers at all times.</p>
+            </div>
+
+            <div class="rule-card reveal">
+                <div class="icon-box"><i class="fa-solid fa-child-reaching"></i></div>
+                <h3 data-en="With Children" data-hi="बच्चों के साथ">With Children</h3>
+                <p>Keep children with you at all times. Write your mobile number on a band for
+                   small children — lost child help desks are located at every gate.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================== NEARBY ============================== -->
+<section class="alt-bg" id="nearby">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">Around Ayodhya</span>
+            <h2 data-en="Explore Nearby" data-hi="आसपास देखें">Explore Nearby</h2>
+            <p data-en="Sacred sites, riverside ghats, food and markets — all within a short distance of the mandir."
+               data-hi="पवित्र स्थल, नदी के घाट, भोजन और बाजार — सभी मंदिर से थोड़ी दूरी पर।">
+                Sacred sites, riverside ghats, food and markets — all within a short distance
+                of the mandir.
+            </p>
+        </div>
+
+        <div class="filter-row reveal" id="placeFilters">
+            <button class="chip active" data-cat="all">All</button>
+            <button class="chip" data-cat="temple">Temples</button>
+            <button class="chip" data-cat="ghat">Ghats</button>
+            <button class="chip" data-cat="food">Food</button>
+            <button class="chip" data-cat="shopping">Shopping</button>
+        </div>
+
+        <div class="nearby-grid" id="nearbyGrid">
+            <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ============================ FESTIVALS ============================ -->
+<section id="festivals">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">Utsav Calendar</span>
+            <h2 data-en="Festivals &amp; Special Days" data-hi="त्योहार एवं विशेष दिन">Festivals &amp; Special Days</h2>
+            <p data-en="Ayodhya celebrates through the year. Expect much heavier crowds and extended darshan hours on these days."
+               data-hi="अयोध्या वर्ष भर उत्सव मनाती है। इन दिनों अधिक भीड़ और विस्तारित दर्शन समय की अपेक्षा करें।">
+                Ayodhya celebrates through the year. Expect much heavier crowds and extended
+                darshan hours on these days.
+            </p>
+        </div>
+
+        <div class="festival-grid" id="festivalGrid">
+            <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ============================ EMERGENCY ============================ -->
+<section class="emergency" id="emergency">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">Stay Safe</span>
+            <h2 data-en="Emergency &amp; Assistance" data-hi="आपातकाल एवं सहायता">Emergency &amp; Assistance</h2>
+            <p data-en="Save these numbers before you travel. Tap any number to call directly from your phone."
+               data-hi="यात्रा से पहले ये नंबर सहेज लें। सीधे कॉल करने के लिए किसी भी नंबर पर टैप करें।">
+                Save these numbers before you travel. Tap any number to call directly from your phone.
+            </p>
+        </div>
+
+        <div class="emergency-grid" id="emergencyGrid">
+            <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =============================== HELP =============================== -->
+<section class="alt-bg" id="help">
+    <div class="container">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">We're Here to Help</span>
+            <h2 data-en="Help &amp; Support" data-hi="सहायता एवं समर्थन">Help &amp; Support</h2>
+            <p data-en="Have a question about your visit? Send us a message and our help desk will respond."
+               data-hi="अपनी यात्रा के बारे में प्रश्न है? हमें संदेश भेजें, हमारा सहायता केंद्र उत्तर देगा।">
+                Have a question about your visit? Send us a message and our help desk will respond.
+            </p>
+        </div>
+
+        <div class="help-grid">
+
+            <div class="help-info reveal">
+                <h3 data-en="Visitor Help Desk" data-hi="आगंतुक सहायता केंद्र">Visitor Help Desk</h3>
+                <p>Our volunteers assist thousands of devotees every day with directions,
+                   accessibility and lost belongings.</p>
+
+                <ul class="help-points">
+                    <li>
+                        <div class="icon-box"><i class="fa-solid fa-wheelchair"></i></div>
+                        <div>
+                            <strong>Accessibility support</strong>
+                            <span>Free wheelchairs, ramps and priority queues for senior citizens
+                                  and differently-abled devotees.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon-box"><i class="fa-solid fa-bag-shopping"></i></div>
+                        <div>
+                            <strong>Lost &amp; found</strong>
+                            <span>Report lost items or persons at any gate help desk, or call the
+                                  temple helpline.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon-box"><i class="fa-solid fa-bottle-water"></i></div>
+                        <div>
+                            <strong>Free facilities</strong>
+                            <span>Drinking water, restrooms, shoe stands and lockers are provided
+                                  free of charge.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon-box"><i class="fa-solid fa-language"></i></div>
+                        <div>
+                            <strong>Language assistance</strong>
+                            <span>Volunteers speak Hindi, English, Tamil, Telugu, Bengali and
+                                  Marathi.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <form class="form-card reveal" id="helpForm">
+                <div class="form-error" id="helpError">
+                    <i class="fa-solid fa-circle-exclamation"></i><span></span>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="hName">Your name</label>
+                        <input type="text" id="hName" placeholder="Full name" required>
+                    </div>
+                    <div class="field">
+                        <label for="hEmail">Email</label>
+                        <input type="email" id="hEmail" placeholder="you@example.com" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="hSubject">Subject</label>
+                    <select id="hSubject" required>
+                        <option value="">Choose a topic</option>
+                        <option>Darshan booking query</option>
+                        <option>Accessibility assistance</option>
+                        <option>Lost &amp; found</option>
+                        <option>Travel &amp; accommodation</option>
+                        <option>Feedback or suggestion</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="hMessage">Your message</label>
+                    <textarea id="hMessage" placeholder="Tell us how we can help you…" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="helpSubmit">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span data-en="Send Message" data-hi="संदेश भेजें">Send Message</span>
+                </button>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================== FOOTER ============================== -->
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <div class="logo-icon"><i class="fa-solid fa-gopuram"></i></div>
+                <h3>राम मंदिर</h3>
+                <span>Shri Ram Janmabhoomi · Ayodhya</span>
+                <p>An informational visitor portal to help devotees plan a peaceful and
+                   well-organised darshan at Ayodhya Dham.</p>
+                <div class="socials">
+                    <a href="#home" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#home" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#home" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#home" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <a href="#about">About the Mandir</a>
+                <a href="#timings">Darshan Timings</a>
+                <a href="#gallery">Photo Gallery</a>
+                <a href="#festivals">Festival Calendar</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Visitors</h4>
+                <a href="#visitors">Live Crowd Status</a>
+                <a href="#visitors">Book Darshan</a>
+                <a href="#rules">Rules &amp; Guidelines</a>
+                <a href="#nearby">Nearby Places</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul class="footer-contact">
+                    <li><i class="fa-solid fa-location-dot"></i>
+                        Shri Ram Janmabhoomi Path, Ayodhya, Uttar Pradesh 224123</li>
+                    <li><i class="fa-solid fa-phone"></i> Help desk: 1800-000-0000</li>
+                    <li><i class="fa-solid fa-triangle-exclamation"></i> Emergency: 112</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© {{ year }} Ram Mandir Visitor Portal · A student project</p>
+            <p>॥ जय श्री राम ॥</p>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ============================ AUTH MODAL ============================ -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+        <div class="modal-head">
+            <h3 id="authTitle">Welcome</h3>
+            <p>Login or register to book your darshan slot</p>
+            <button class="modal-close" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="modal-body">
+            <div class="tabs">
+                <button class="active" data-tab="login">Login</button>
+                <button data-tab="register">Register</button>
+            </div>
+
+            <div class="form-error" id="authError">
+                <i class="fa-solid fa-circle-exclamation"></i><span></span>
+            </div>
+
+            <!-- Login -->
+            <form id="loginForm">
+                <div class="field">
+                    <label for="lEmail">Email</label>
+                    <input type="email" id="lEmail" placeholder="you@example.com" required autocomplete="email">
+                </div>
+                <div class="field">
+                    <label for="lPass">Password</label>
+                    <input type="password" id="lPass" placeholder="Your password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                </button>
+                <p class="modal-alt">New here? <button type="button" data-goto="register">Create an account</button></p>
+            </form>
+
+            <!-- Register -->
+            <form id="registerForm" hidden>
+                <div class="field">
+                    <label for="rName">Full name</label>
+                    <input type="text" id="rName" placeholder="Your name" required autocomplete="name">
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="rEmail">Email</label>
+                        <input type="email" id="rEmail" placeholder="you@example.com" required autocomplete="email">
+                    </div>
+                    <div class="field">
+                        <label for="rPhone">Phone</label>
+                        <input type="tel" id="rPhone" placeholder="10 digits" maxlength="10" autocomplete="tel">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="rPass">Password</label>
+                    <input type="password" id="rPass" placeholder="Minimum 6 characters" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fa-solid fa-user-plus"></i> Create Account
+                </button>
+                <p class="modal-alt">Already registered? <button type="button" data-goto="login">Login instead</button></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- ========================== ACCOUNT MODAL ========================== -->
+<div class="modal-overlay" id="accountModal">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="accTitle">
+        <div class="modal-head">
+            <h3 id="accTitle">My Bookings</h3>
+            <p id="accSub">Your darshan reservations</p>
+            <button class="modal-close" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="booking-list" id="bookingList"></div>
+            <a class="btn btn-primary btn-block" id="adminPanelBtn" href="/admin" hidden style="margin-top:14px">
+                <i class="fa-solid fa-gauge-high"></i> Open Admin Dashboard
+            </a>
+            <button class="btn btn-ghost btn-block" id="logoutBtn" style="margin-top:22px">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ========================== RECEIPT MODAL ========================== -->
+<div class="modal-overlay" id="receiptModal">
+    <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-body">
+            <div class="receipt">
+                <div class="tick"><i class="fa-solid fa-check"></i></div>
+                <h3>Darshan Confirmed</h3>
+                <p>Please carry a valid photo ID matching your registration.</p>
+
+                <div class="ticket-qr-wrap">
+                    <img id="rcQr" class="ticket-qr" src="" alt="Darshan ticket QR code">
+                    <div><strong>Scan to verify</strong><small id="rcQrHint">Digital ticket verification</small></div>
+                </div>
+
+                <div class="receipt-box">
+                    <div><span>Reference</span><strong id="rcRef">–</strong></div>
+                    <div><span>Date</span><strong id="rcDate">–</strong></div>
+                    <div><span>Slot</span><strong id="rcSlot">–</strong></div>
+                    <div><span>Timing</span><strong id="rcTime">–</strong></div>
+                    <div><span>Devotees</span><strong id="rcPeople">–</strong></div>
+                </div>
+
+                <div class="receipt-actions">
+                    <a class="btn btn-primary" id="rcTicket" href="#" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-qrcode"></i> Open QR Ticket
+                    </a>
+                    <button class="btn btn-ghost" data-close>
+                        <i class="fa-solid fa-check"></i> Done
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================= LIGHTBOX ============================= -->
+<div class="lightbox" id="lightbox">
+    <button class="lightbox-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <button class="lightbox-nav prev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="lightbox-nav next" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
+    <div>
+        <img id="lightboxImg" alt="">
+        <p class="lightbox-caption" id="lightboxCaption"></p>
+    </div>
+</div>
+
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<button class="to-top" id="toTop" aria-label="Back to top">
+    <i class="fa-solid fa-chevron-up"></i>
+</button>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
